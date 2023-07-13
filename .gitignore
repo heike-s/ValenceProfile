@@ -1,3 +1,7 @@
+# User defined files
+/discovery_data/*
+/discovery_res/*
+
 # History files
 .Rhistory
 .Rapp.history
