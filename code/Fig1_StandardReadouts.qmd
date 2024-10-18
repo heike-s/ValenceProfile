@@ -1,0 +1,92 @@
+---
+title: 'Figure 1: Standard Readouts'
+format:
+    html:
+        code-fold: false
+        self-contained: true
+        toc: true
+editor:
+    render-on-save: false
+---
+
+### Libraries & Config
+
+``` {r}
+#| label: libraries
+#| message: false
+#| code-fold: true
+
+library(here)
+library(glue)
+library(dplyr)
+library(tidyr)
+library(knitr)
+library(pander)
+library(ggplot2)
+library(ggbeeswarm)
+library(lme4)
+library(emmeans)
+```
+
+```{r}
+#| label: config + paths + data
+#| code-fold: true
+
+source(here('/home/bagotlab/heike.s/Data/ValenceProfile/ValenceProfile/styles.R'))
+data_path <- '/home/bagotlab/heike.s/Data/AppAv_CSDS_2309/results/summary/'
+HEs <- readRDS(glue('{data_path}/HE_mean.rds'))
+master <- read.csv(glue('{data_path}../../master.csv'))
+```
+
+
+``` {r}
+HEs$Day <- as.numeric(gsub('d','',HEs$Day))
+HEs <- HEs[HEs$Day %in% seq(1,15),]
+HEs$Sex <- master$Sex[match(HEs$ID, master$ID)]
+HEs$Box <- master$Box[match(HEs$ID, master$ID)]
+HEs$group <- ifelse(HEs$Day == 15, '2', '1')
+
+ggplot(HEs, aes(as.factor(Day), cue10, group = CS, color = CS)) + 
+    geom_hline(yintercept = c(0.5, 1), color = 'gray80') + 
+    stat_summary(fun.data = 'mean_se') + 
+    stat_summary(fun.data = 'mean_se', geom = 'line') +
+    scale_y_continuous(breaks = c(0.5,1,1.5), 
+                       name = 'Avg. Head Entries (10s Cue Period)') +
+    scale_color_manual(values = col_cs) + 
+    facet_grid(. ~ group, scales = 'free', space = 'free') + 
+    plot_theme + 
+    theme(axis.title.x = element_blank(),
+          strip.text = element_blank())
+ggsave('/home/bagotlab/heike.s/Data/ValenceProfile/plots/Fig1_HEs_AllSessions.pdf', width = 6, height = 5)
+
+```
+
+``` {r}
+mod <- lmer(cue10 ~ CS * as.factor(Day) + (1|ID), data = HEs)
+pairs(emmeans(mod, ~ CS))
+pwpm(emmeans(mod, ~ CS | Day))
+```
+
+
+``` {r}
+HEs %>%
+    filter(Day %in% c(1,12,13,14), 
+           CS == 'CSR') %>%
+    mutate(Day = factor(Day),
+           Group = ifelse(Day == 1, '1', '2')) -> HEs_last 
+
+learners = unique(HEs_last$ID[HEs_last$cue10 > 2.5])
+
+ggplot(HEs_last, aes(Day, cue10, color = CS)) + 
+    geom_jitter(data = HEs_last[!(HEs_last$ID %in% learners),], size = 0.5, alpha = 0.5, width = 0.1, height = 0) + 
+    geom_point(data = HEs_last[HEs_last$ID %in% learners & HEs_last$Group %in% '2',], size = 1.5) + 
+    stat_summary(data = HEs_last[HEs_last$ID %in% learners & HEs_last$Group %in% '2',], 
+                 aes(group = ID),
+                 fun.data = 'mean_se', geom = 'line') + 
+    scale_color_manual(values = col_cs[2]) + 
+    scale_y_continuous(name = 'Avg. Head Entries (10s Cue Period)') + 
+    plot_theme + 
+    theme(strip.text = element_blank())
+ggsave('/home/bagotlab/heike.s/Data/ValenceProfile/plots/Fig1_HEs_Individual_LastSessions.pdf', width = 2.5, height = 5)
+
+```
