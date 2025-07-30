@@ -11,7 +11,6 @@ library(emmeans)
 
 ##############################################################################
 
-setwd(paste0('/home/bagotlab/heike.s/Data/ValenceProfile/ValenceProfile/'))
 source('styles.R')
 
 ### Load Combined Data ----
