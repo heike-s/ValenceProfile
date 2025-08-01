@@ -1,6 +1,7 @@
 # User defined files
-/discovery_data/*
-/discovery_res/*
+/plsda_models/*
+/data/*
+/video_prep/*
 
 # History files
 .Rhistory
