@@ -6,11 +6,13 @@ library(dplyr)
 library(forcats)
 library(ggplot2)
 library(glue)
+library(here)
 library(lme4)
 library(emmeans)
 
 ##############################################################################
 
+setwd(here('..','ValenceProfile','ValenceProfile'))
 source('styles.R')
 
 ### Load Combined Data ----
