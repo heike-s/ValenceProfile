@@ -152,7 +152,7 @@ data_mx_select %>%
 data_mx_recall_pre <- tibble(data_mx_recall_pre[,vars])
 
 single_mx_select %>%
-    filter(window_all == 'cue cue cue') %>%
+    filter(window_all == 'pre pre pre') %>%
     group_by(model,protocol,id,sex,n,type_sub,
              tone_condition,box,day) %>%
     slice(seq(n(), n()-200)) -> data_sg_recall_pre

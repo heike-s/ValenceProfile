@@ -1,3 +1,5 @@
+# Uses PLS-DA models to predict cue type in different paradigms on recall day.
+# Identifies most useful predictors for each cue type. 
 library(mdatools)
 library(dplyr)
 library(tidyr)
@@ -13,7 +15,6 @@ source('styles.R')
 
 # Load data ----
 syls <- read.csv('data/syl_annotation.csv')
-data_session_pre <- readRDS('data/data_session_pre.rds')
 data_session_cue <- readRDS('data/data_session_cue.rds')
 
 # Load models ----
