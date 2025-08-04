@@ -12,7 +12,7 @@ setwd(here('..'))
 
 ### Training data - mixed ----
 # Load train data
-train_folder = 'AppAv_CSDS_2309/'
+train_folder = 'Train_Data/'
 train_master = read.csv(glue('{train_folder}master.csv'))
 train_files = list.files(glue('{train_folder}data_preproc/kpms_output/'), 
                          '*.rds', full.names = TRUE)[1:15]
@@ -35,7 +35,7 @@ train %<>%
 
 ### Test data - mixed ----
 # Load test data
-test_folder = 'AppAv_2211/'
+test_folder = 'Test_Data/'
 test_master = read.csv(glue('{test_folder}master.csv'))
 test_files = list.files(glue('{test_folder}data_preproc/kpms_output/'),
                         '*.rds', full.names = TRUE)[1:15]
@@ -71,7 +71,7 @@ saveRDS(data_mx_select, 'ValenceProfile/ValenceProfile/data/mixed_data.rds')
 
 ### Single valence data ----
 # Load single valence data
-single_folder = 'AppAv_Single_2412/'
+single_folder = 'Single_Valence/'
 single_master = read.csv(glue('{single_folder}master.csv'))
 single_files = list.files(glue('{single_folder}data_preproc/kpms_output/'),
                           '*.rds', full.names = TRUE)[1:16]
