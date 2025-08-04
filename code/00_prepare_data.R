@@ -260,13 +260,119 @@ saveRDS(data_session_pre, 'ValenceProfile/ValenceProfile/data/data_session_pre_n
 
 ##############################################################################
 
-### Fig 3. Fig S5. - Learning ----
+### Fig 4. - Shock related behaviors early late cue ----
+# 05_aversive.r
+
+# Cue data raw
+data_mx_select %>%
+    filter(window_all %in% c('cue cue early','cue cue cue')) -> data_mx_recall_midcue
+data_mx_recall_cue <- tibble(data_mx_recall_midcue[,vars])
+
+single_mx_select %>%
+    filter(window_all %in% c('cue cue early','cue cue cue')) -> data_sg_recall_midcue
+data_sg_recall_cue <- tibble(data_sg_recall_midcue[,vars])
+
+data_mxsg_cue <- bind_rows(data_mx_recall_midcue, data_sg_recall_midcue)
+saveRDS(data_mxsg_cue, 'ValenceProfile/ValenceProfile/data/data_sg_mx_cue_10s.rds')
 
 
+# Pre-cue data raw
+data_mx_select %>%
+    filter(window_all == 'pre pre pre') %>%
+    group_by(model,protocol,id,sex,n,type_sub,
+             tone_condition,box,day) -> data_mx_recall_pre
+data_mx_recall_pre <- tibble(data_mx_recall_pre[,vars])
+
+single_mx_select %>%
+    filter(window_all == 'pre pre pre') %>%
+    group_by(model,protocol,id,sex,n,type_sub,
+             tone_condition,box,day) -> data_sg_recall_pre
+data_sg_recall_pre <- tibble(data_sg_recall_pre[,vars])
+
+data_mxsg_pre <- bind_rows(data_mx_recall_pre, data_sg_recall_pre)
+saveRDS(data_mxsg_pre, 'ValenceProfile/ValenceProfile/data/data_sg_mx_pre_10s.rds')
+
+
+# Cue data average
+data_mxsg_cue %>%
+    group_by(model,protocol,id,sex,n,type_sub,
+             tone_condition,box,day) %>%
+    count(syl) %>%
+    filter(syl <= 24) %>%
+    mutate(syl = paste0('syl', syl)) %>%
+    pivot_wider(names_from = c(syl), 
+                values_from = nn, values_fill = 0) -> data_syl_cue
+
+data_mxsg_cue %>%
+    group_by(model,protocol,id,sex,n,type_sub,
+             tone_condition,box,day) %>%
+    summarise(mean_oriented_port = mean(oriented_port), 
+        mean_port_dist_snout = mean(port_dist_snout),
+        mean_closest_corner_dist_base = 
+                    mean(closest_corner_dist_base)) -> data_mean_cue
+
+left_join(data_syl_cue, data_mean_cue, 
+            by = c('model','protocol','id','sex','n','type_sub',
+                   'tone_condition','box','day')) -> data_trial_cue
+
+data_trial_cue %>%
+    filter(day %in% c('D01','D13','D15'),
+           protocol %in% c('Aversive', 'Mixed')) %>%
+    mutate('All Rear' = syl3 + syl9 + syl15 + syl20 + syl24,
+           'All Locomote' = syl16 + syl19 + syl21 + syl22,
+           'Explore' = `All Rear` + `All Locomote`,
+           protocol = factor(protocol, levels = c('Mixed', 'Aversive'))) %>%
+    group_by(model,protocol,id,sex,type_sub,tone_condition,box,day) %>%
+    mutate(n_occ_type = row_number(),
+           n_cues = max(row_number()),
+           window = ifelse(n_occ_type == n_cues | n_occ_type == n_cues -1, 'late', 
+                           ifelse(n_occ_type %in% c(1,2), 'early', 'other'))) %>%
+    filter(window %in% c('early','late')) %>%
+    group_by(model,protocol,id,sex,type_sub,tone_condition,box,day,window) %>%
+    summarise('% Pause' = mean(syl0 / 400 * 100)) -> data_el_cue
+
+saveRDS(data_el_cue, 'ValenceProfile/ValenceProfile/data/data_el_cue.rds')
+
+
+# Pre-cue data average
+data_mxsg_pre %>%
+    group_by(model,protocol,id,sex,n,type_sub,
+             tone_condition,box,day) %>%
+    count(syl) %>%
+    filter(syl <= 24) %>%
+    mutate(syl = paste0('syl', syl)) %>%
+    pivot_wider(names_from = c(syl), 
+                values_from = nn, values_fill = 0) -> data_syl_pre
+
+data_mxsg_pre %>%
+    group_by(model,protocol,id,sex,n,type_sub,
+             tone_condition,box,day) %>%
+    summarise(mean_oriented_port = mean(oriented_port), 
+        mean_port_dist_snout = mean(port_dist_snout),
+        mean_closest_corner_dist_base = 
+                    mean(closest_corner_dist_base)) -> data_mean_pre
+
+left_join(data_syl_pre, data_mean_pre, 
+            by = c('model','protocol','id','sex','n','type_sub',
+                   'tone_condition','box','day')) -> data_trial_pre
+
+data_trial_pre %>%
+    filter(day %in% c('D01','D13','D15'),
+           protocol %in% c('Aversive', 'Mixed')) %>%
+    mutate('All Rear' = syl3 + syl9 + syl15 + syl20 + syl24,
+           'All Locomote' = syl16 + syl19 + syl21 + syl22,
+           'Explore' = `All Rear` + `All Locomote`,
+           protocol = factor(protocol, levels = c('Mixed', 'Aversive'))) %>%
+    group_by(model,protocol,id,sex,tone_condition,box,day) %>%
+    mutate(n_occ_type = row_number(),
+           n_cues = max(row_number()),
+           window = ifelse(n_occ_type == n_cues | n_occ_type == n_cues -1, 'late', 
+                           ifelse(n_occ_type %in% c(1,2), 'early', 'other'))) %>%
+    filter(window %in% c('early','late')) %>%
+    group_by(model,protocol,id,sex,tone_condition,box,day,window) %>%
+    summarise('% Pause' = mean(syl0 / 400 * 100)) -> data_el_pre
+
+saveRDS(data_el_pre, 'ValenceProfile/ValenceProfile/data/data_el_pre.rds')
 
 
 ##############################################################################
-
-### Fig 4. - Shock-induced pausing ----
-
-

@@ -1,3 +1,5 @@
+# Analyzing PLSDA predictions throughout learning. Analyzing % Exploration
+# acros models. 
 library(dplyr)
 library(tidyr)
 library(stringr)
