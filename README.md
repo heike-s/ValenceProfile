@@ -13,6 +13,6 @@ All data can be found [here](https://osf.io/4xfz2/). Path to datafiles are refer
 | | `./code/00_prepare_data.R` | `Data/KPMS/COHORT/DAY_kpms_df.rds` |
 | 1, S2, S3 | `./code/01_standard_readouts.R` | `Data/port.rds`, `Data/freezing.rds` |
 | | `./code/02_plsda_model.R` | `Data/data_mx_recall.rds` |
-| 2, S1, S4 | `Data/data_session_cue.rds`, `Data/model_csrcsm.rds`, `Data/model_csrcsm.rds`, `Data/model_csrcsm.rds`|
+| 2, S1, S4 | `./code/03_plsda_results.R` |  `Data/data_session_cue.rds`, `Data/model_csrcsm.rds`, `Data/model_csrcsm.rds`, `Data/model_csrcsm.rds`|
 | 3, S5 | `./code/04_learning.R` | `Data/plsda_predicted.rds`, `Data/data_session_cue.rds`,`Data/data_session_pre_nt.rds` |
 | 4 | `./code/05_aversive.R` | `Data/plsda_predicted.rds`, `Data/data_session_cue.rds`,`Data/data_session_pre.rds`, `Data/data_session_pre_nt.rds`, `Data/data_el_cue.rds`,`Data/data_el_pre.rds` |
