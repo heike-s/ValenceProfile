@@ -210,3 +210,73 @@ ggsave('plots/Fig3e_explore_pause_cor.pdf', width = 3.25, height = 3.25)
 
 
 ##############################################################################
+
+### Figure S5 - Appetitive learning ----
+# Data preparation
+data_session_cue %>%
+    filter(type_sub != 'CSS', protocol %in% c('Appetitive', 'Mixed'),
+           !(protocol == 'Appetitive' & type_sub %in% c('CSS'))) %>%
+    mutate('All Rear' = syl3 + syl9 + syl15 + syl20 + syl24,
+           'All Locomote' = syl16 + syl19 + syl21 + syl22,
+           'Explore' = `All Rear` + `All Locomote`,
+           protocol = factor(protocol, levels = c('Mixed','Appetitive'))) -> data_session
+
+# Figure S5a - Port distance
+ggplot(data_session, aes(day, mean_port_dist_snout, group = paste(protocol, type_sub), 
+            fill = paste(sex, type_sub), col = type_sub, shape = protocol)) +
+    stat_summary(fun = 'mean', geom = 'line', size = 0.75) +   
+    stat_summary(fun.data = 'mean_se', size = 0.75, linewidth = 0.75) + 
+    scale_fill_manual(values = c(col_cs[c(1,2)], 'white', 'white')) + 
+    scale_color_manual(values = col_cs) + 
+    scale_shape_manual(values = c(21,22)) + 
+    scale_y_continuous(expand = c(0,0), breaks = c(0,100,200,300), 
+                       limits = c(0,300), name = 'Port Distance') + 
+    coord_cartesian(ylim = c(50,250)) + 
+    facet_wrap(sex ~ ., nrow = 2, scales = 'free')+ 
+    plot_theme + 
+    theme(panel.grid.major.y = element_line('gray80'),
+          axis.title.x = element_blank(),
+          panel.spacing = unit(1.5, 'cm'))
+ggsave('../plots/FigS5_port_dist.pdf', width = 5.5, height = 7.5)
+
+
+# Figure S5c - Port orientation
+ggplot(data_session, aes(day, mean_oriented_port, group = paste(protocol, type_sub), 
+            fill = paste(sex, type_sub), col = type_sub, shape = protocol)) +
+    stat_summary(fun = 'mean', geom = 'line', size = 0.75) +   
+    stat_summary(fun.data = 'mean_se', size = 0.75, linewidth = 0.75) + 
+    scale_fill_manual(values = c(col_cs[c(1,2)], 'white', 'white')) + 
+    scale_color_manual(values = col_cs) + 
+    scale_shape_manual(values = c(21,22)) + 
+    scale_y_continuous(expand = c(0,0), breaks = c(0,4,8), 
+                       name = 'Port Orientation') + 
+    coord_cartesian(ylim = c(0,8)) + 
+    facet_wrap(sex ~ ., nrow = 2, scales = 'free')+ 
+    plot_theme + 
+    theme(panel.grid.major.y = element_line('gray80'),
+          axis.title.x = element_blank(),
+          panel.spacing = unit(1.5, 'cm'))
+ggsave('../plots/FigS5_port_orient.pdf', width = 5.5, height = 7.5)
+
+
+# Figure S5c - % Explore
+ggplot(data_session, aes(day, `Explore` / 200 * 100, group = paste(protocol, type_sub), 
+            fill = paste(sex, type_sub), col = type_sub, shape = protocol)) +
+    stat_summary(fun = 'mean', geom = 'line', size = 0.75) +   
+    stat_summary(fun.data = 'mean_se', size = 0.75, linewidth = 0.75) + 
+    scale_fill_manual(values = c(col_cs[c(1,2)], 'white', 'white')) + 
+    scale_color_manual(values = col_cs) + 
+    scale_shape_manual(values = c(21,22)) + 
+    scale_y_continuous(expand = c(0,0), breaks = c(0,10,20,30,40), 
+                       name = '% Explore') + 
+    coord_cartesian(ylim = c(0,40)) + 
+    facet_wrap(sex ~ ., nrow = 2, scales = 'free')+ 
+    plot_theme + 
+    theme(panel.grid.major.y = element_line('gray80'),
+          axis.title.x = element_blank(),
+          panel.spacing = unit(1.5, 'cm'))
+ggsave('../plots/FigS5_explore.pdf', width = 5.5, height = 7.5)
+
+
+
+##############################################################################
