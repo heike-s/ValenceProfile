@@ -3,7 +3,7 @@
 This is the github repository accompanying the paper: [**Sex-specific exploration accounts for differences in valence learning in male and female mice**](https://www.biorxiv.org/content/10.1101/2024.05.08.593167v1).
 
 This repo contains code and data to reproduce analyses and main and supplementary figures and tables.\
-All data can be found [here](https://osf.io/4xfz2/).
+All data can be found [here](https://osf.io/4xfz2/). Path to datafiles are referring to file structure in OSF repository. \
 
 ------------------------------------------------------------------------
 
