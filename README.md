@@ -8,8 +8,8 @@ All data can be found [here](https://osf.io/4xfz2/). Path to datafiles are refer
 ------------------------------------------------------------------------
 
 ### Overview: Code and data for Figures
-| Figures  | Description | Path to Code | Datafiles used | 
-|----------|-------------|--------------|----------------|
+| Figures  | Description                  | Path to Code | Datafiles used | 
+|----------|------------------------------|--------------|----------------|
 | | Process kp-MoSeq output into dataframes for downstream analyses. | `./code/00_prepare_data.R` | `Data/KPMS/COHORT/DAY_kpms_df.rds` |
 | 1, S2, S3 | Evaluate food port acquired metrics and freezing as metrics of learning. | `./code/01_standard_readouts.R` | `Data/port.rds`, `Data/freezing.rds` |
 | | Identify PLSDA model with best fit. | `./code/02_plsda_model.R` | `Data/data_mx_recall.rds` |
